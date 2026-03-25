@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eptain AI Copilot | Instant Insurance Suggestions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4F46E5; /* Vibrant Acko-style Purple/Indigo */
+      --primary-hover: #4338CA;
+      --secondary: #10B981; /* Niva Bupa style Green */
+      --bg-light: #F8FAFC;
+      --text-dark: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+    body { background: var(--bg-light); color: var(--text-dark); overflow-x: hidden; scroll-behavior: smooth; }
+    
+    /* Navbar Block */
+    .navbar { position: fixed; top: 0; width: 100%; height: 72px; background: #fff; display: flex; align-items: center; padding: 0 5%; justify-content: space-between; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); z-index: 1000; }
+    .brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; cursor: pointer; }
+    .nav-link:hover { color: var(--primary); }
+    .btn { padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; font-size: 0.95rem; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+    .btn-primary { background: var(--primary); color: #fff; border: 2px solid var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
+
+    /* Hero Block */
+    .hero { min-height: 80vh; padding: 140px 5% 60px 5%; display: flex; flex-direction: column; align-items: center; text-align: center; background: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%); }
+    .hero-title { font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; color: var(--text-dark); letter-spacing: -1px; max-width: 800px; }
+    .hero-subtitle { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 3rem; line-height: 1.6; max-width: 600px; }
+    
+    /* Quick Quote Module - B2C Conversion focus */
+    .quote-card { background: #fff; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); text-align: left; width: 100%; max-width: 800px; margin-bottom: 4rem; animation: popIn 0.8s ease-out; }
+    .quote-header { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; }
+    .quote-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end; }
+    .input-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .input-field { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 0.8rem 1rem; font-size: 1rem; outline: none; transition: border-color 0.2s; font-family: 'Outfit'; }
+    .input-field:focus { border-color: var(--primary); }
+
+    /* Input AI Engine Section */
+    .input-section { background: var(--primary); padding: 1.5rem; border-radius: 20px; box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.4); width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; transition: transform 0.3s; }
+    .input-section:focus-within { transform: translateY(-5px); }
+    .input-section-title { color: #fff; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; }
+    
+    .input-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .input-wrapper { flex: 1; min-width: 300px; position: relative; }
+    .ai-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--primary); }
+    .query-input { width: 100%; border: 2px solid transparent; border-radius: 12px; padding: 1.25rem 1rem 1.25rem 3.5rem; font-size: 1.1rem; outline: none; font-family: 'Outfit'; font-weight: 500; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .query-input:focus { border-color: #fff; }
+    
+    .dropdown-select { border: 2px solid transparent; border-radius: 12px; padding: 1.25rem; font-size: 1.1rem; outline: none; font-family: 'Outfit'; font-weight: 600; color: var(--text-dark); background: #fff; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .submit-btn { background: #fff; color: var(--primary); border: none; border-radius: 12px; padding: 1.25rem 2rem; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .submit-btn:hover { background: #EEF2FF; transform: translateY(-2px); }
+
+    /* Advanced AI controls - Phase 4 features */
+    .ai-controls { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.1); padding: 0.75rem 1rem; border-radius: 10px; }
+    .tone-selector { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; padding: 0.3rem 0.5rem; outline: none; font-family: 'Outfit'; cursor: pointer; }
+    .tone-selector option { color: var(--text-dark); }
+    
+    /* Result Cards Block */
+    .results-container { padding: 0 5% 5rem 5%; width: 100%; max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+    .result-card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.08); border: 1px solid var(--border); display: none; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: translateY(20px); position: relative; overflow: hidden; transition: 0.3s; }
+    .result-card:hover { box-shadow: 0 20px 40px -5px rgba(79, 70, 229, 0.15); border-color: rgba(79, 70, 229, 0.3); }
+    .result-card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--primary); }
+    
+    .result-header { font-size: 1.2rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--text-dark); display: flex; align-items: center; justify-content: space-between; }
+    .result-text { font-size: 1.15rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem; }
+    
+    .result-actions { display: flex; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+    .action-btn { background: #F1F5F9; border: none; padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 0.5rem; color: var(--text-dark); }
+    .action-btn:hover { background: var(--primary); color: white; }
+    
+    /* Use Cases Grid */
+    .use-cases-section { padding: 5rem 5%; background: #fff; }
+    .section-title { text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+    .section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.2rem; margin-bottom: 4rem; }
+    .use-cases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+    
+    .use-case-card { padding: 2.5rem 2rem; border-radius: 20px; background: var(--bg-light); border: 1px solid var(--border); transition: 0.3s; cursor: pointer; text-align: center; }
+    .use-case-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.1); background: #fff; }
+    .uc-icon { font-size: 3rem; margin-bottom: 1.5rem; display: inline-block; }
+    .uc-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; }
+    .uc-desc { color: var(--text-muted); line-height: 1.6; font-size: 1.05rem; }
+
+    /* Footer */
+    .footer { background: var(--text-dark); color: white; padding: 4rem 5% 2rem 5%; text-align: center; }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; }
+    .footer-links a { color: #CBD5E1; text-decoration: none; transition: 0.2s; font-weight: 500; }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy { color: #64748B; font-size: 0.9rem; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; }
+
+    /* Loading state */
+    .loader { display: none; margin: 0 auto 3rem auto; text-align: center; }
+    .loader svg { width: 60px; height: 60px; animation: spin 1s linear infinite; color: var(--primary); }
+    
+    /* Floating AI Chat Widget */
+    .ai-fab { position: fixed; bottom: 2rem; right: 2rem; width: 64px; height: 64px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .ai-fab:hover { transform: scale(1.1); }
+
+    .ai-widget { position: fixed; bottom: 6rem; right: 2rem; width: 380px; height: 600px; max-height: 80vh; background: #fff; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); z-index: 999; display: flex; flex-direction: column; overflow: hidden; transform-origin: bottom right; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); opacity: 0; border: 1px solid rgba(0,0,0,0.05); }
+    .ai-widget.open { transform: scale(1); opacity: 1; }
+    
+    .ai-header { background: linear-gradient(135deg, var(--primary), #4338CA); color: #fff; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .ai-header-title { font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .ai-close { background: rgba(255,255,255,0.2); border: none; width: 28px; height: 28px; border-radius: 50%; color: #fff; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .ai-close:hover { background: rgba(255,255,255,0.4); }
+
+    .ai-chat-area { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: #F8FAFC; }
+    .ai-bubble { max-width: 85%; padding: 1rem; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .ai-bubble.bot { background: #fff; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .ai-bubble.user { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2); }
+    
+    .ai-input-area { padding: 1rem; background: #fff; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+    .ai-input { flex: 1; border: 1px solid var(--border); border-radius: 999px; padding: 0.8rem 1.25rem; outline: none; font-size: 0.95rem; font-family: 'Outfit'; transition: 0.2s; }
+    .ai-input:focus { border-color: var(--primary); }
+    .ai-send { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    .typing .dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; }
+    .typing .dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing .dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes popIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+
+    /* Toasts */
+    #toastRoot { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast { background: var(--text-dark); color: white; padding: 1rem 2rem; border-radius: 999px; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s forwards; font-size: 0.95rem; text-align: center; }
+
+    @media (max-width: 900px) {
+      .hero { padding-top: 100px; text-align: center; }
+      .quote-grid { grid-template-columns: 1fr; }
+      .input-section { padding: 1rem; }
+      .input-row { flex-direction: column; }
+      .query-input, .dropdown-select, .submit-btn { width: 100%; border-radius: 8px; }
+      .nav-links { display: none; }
+      .ai-widget { width: 100vw; height: 100vh; max-height: 100vh; bottom: 0; right: 0; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- [Navbar Block] -->
+  <nav class="navbar">
+    <div class="brand" onclick="window.scrollTo(0,0)">
+      <div style="background:var(--primary); color:white; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">✨</div>
+      Eptain AI
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" onclick="window.scrollTo(0,0)">Home</a>
+      <a class="nav-link" onclick="document.getElementById('inputSection').scrollIntoView()">Plan Recommender</a>
+      <a class="nav-link" onclick="document.getElementById('usecases').scrollIntoView()">Use Cases</a>
+      <a class="nav-link" onclick="viewSavedHistory()">My Saved Quotes</a>
+    </div>
+    <div>
+      <button class="btn btn-primary" onclick="document.getElementById('inputSection').scrollIntoView({behavior: 'smooth', block:'center'})">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- [Hero Block & Quick Quote] -->
+  <section class="hero">
+    <h1 class="hero-title">Intelligent Insurance. <span style="color:var(--primary);">Instant Quotes.</span></h1>
+    <p class="hero-subtitle">Our AI models analyze millions of data points to find you the absolute perfect health, life, or motor insurance plan—with zero hidden terms.</p>
+    
+    <div class="quote-card" id="quoteCard">
+      <h3 class="quote-header">Get a rapid estimate</h3>
+      <div class="quote-grid">
+        <div>
+          <label class="input-label">Age</label>
+          <select class="input-field"><option>25 Years</option><option selected>26 Years</option><option>27 Years</option></select>
+        </div>
+        <div>
+          <label class="input-label">Pincode</label>
+          <input type="text" class="input-field" placeholder="110001" />
+        </div>
+        <div>
+          <label class="input-label">Mobile</label>
+          <input type="tel" class="input-field" placeholder="9876543210" />
+        </div>
+        <div>
+          <button class="btn btn-primary" style="padding:0.9rem 2rem;" onclick="toggleAI(); sendUserMsg('I need a quick quote for a 26 year old in 110001.')">View Plans ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- [Input Section : Advanced Prompt Engine] -->
+    <div class="input-section" id="inputSection">
+      <div class="input-section-title">
+        <span>🤖 AI Suggestion Engine</span>
+        <span style="font-size:0.8rem; background:rgba(255,255,255,0.2); padding:0.2rem 0.6rem; border-radius:999px;">GPT-4 Powered</span>
+      </div>
+      
+      <div class="input-row">
+        <div class="input-wrapper">
+          <span class="ai-icon">✨</span>
+          <input type="text" id="userQuery" class="query-input" placeholder="Describe exactly what you are looking for..." onkeypress="if(event.key === 'Enter') extractAndCallAPI()" />
+        </div>
+        <select id="suggestionType" class="dropdown-select">
+          <option value="Health Plans">🏥 Health Plans</option>
+          <option value="Car Insurance">🚗 Car Insurance</option>
+          <option value="Business Ideas">💡 Business Ideas</option>
+          <option value="Travel Plans">✈️ Travel Plans</option>
+        </select>
+        <button class="submit-btn" id="submitBtn" onclick="extractAndCallAPI()">Generate Ideas</button>
+      </div>
+
+      <!-- Phase 4 features -->
+      <div class="ai-controls">
+        <div style="color:white; font-size:0.9rem; font-weight:600; display:flex; align-items:center; gap:0.5rem;">
+          Output Tone: 
+          <select id="aiTone" class="tone-selector">
+            <option value="Professional" selected>👔 Professional</option>
+            <option value="Creative">🎨 Creative</option>
+            <option value="Funny">😂 Casual & Funny</option>
+          </select>
+        </div>
+        <button class="btn" style="background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:0.4rem 1rem; font-size:0.85rem;" onclick="viewSavedHistory()">💾 View Saved History</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- [Result Cards Block] -->
+  <div class="loader" id="loader">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+  </div>
+  <div class="results-container" id="resultsContainer">
+    <!-- Suggestions injected here via JS -->
+  </div>
+
+  <!-- [Use Cases Grid] -->
+  <section class="use-cases-section" id="usecases">
+    <h2 class="section-title">Explore Use Cases</h2>
+    <p class="section-subtitle">Click a pre-built template below to auto-fill the suggestion engine.</p>
+    
+    <div class="use-cases-grid">
+      <div class="use-case-card" onclick="autoFill('Recommend comprehensive 1 Cr family floater health insurance covering maternity with zero deductions.', 'Health Plans')">
+        <div class="uc-icon">👨‍👩‍👧‍👦</div>
+        <h3 class="uc-title">Family Health Care</h3>
+        <p class="uc-desc">Match conditions to the perfect Zero-Copay and No-Room-Rent-Cap policies instantly.</p>
+      </div>
+      <div class="use-case-card" onclick="autoFill('Generate 3 unique insuretech business models targeting gig workers.', 'Business Ideas')">
+        <div class="uc-icon">🚀</div>
+        <h3 class="uc-title">Insurtech Ideas</h3>
+        <p class="uc-desc">Brainstorm highly profitable and validated business niches with predictive market algorithms.</p>
+      </div>
+      <div class="use-case-card" onclick="autoFill('I need comprehensive bumper-to-bumper car insurance for my 2023 Tesla Model 3.', 'Car Insurance')">
+        <div class="uc-icon">🏎️</div>
+        <h3 class="uc-title">Vehicle Armor</h3>
+        <p class="uc-desc">Instantly compute depreciation scales and compare zero-depreciation engine protection covers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- [Footer] -->
+  <footer class="footer">
+    <div class="brand" style="justify-content: center; margin-bottom: 2rem; color:#fff;">✨ Eptain AI</div>
+    <div class="footer-links">
+      <a href="#" onclick="triggerToast('Phase 1 Requirement')">About Us</a>
+      <a href="#" onclick="triggerToast('Connected to Mock Orchestrator')">API Docs</a>
+      <a href="#" onclick="localStorage.clear(); triggerToast('Cache Cleared');">Clear LocalStorage</a>
+    </div>
+    <div class="footer-copy">© 2026 Eptain Technologies. End-to-End Analytics & Suggestions Platform.</div>
+  </footer>
+
+  <div id="toastRoot"></div>
+
+  <!-- [Interactive AI Widget] -->
+  <button class="ai-fab" onclick="toggleAI()">💬</button>
+
+  <div class="ai-widget" id="aiWidget">
+    <div class="ai-header"><div class="ai-header-title">✨ Chat with Eptain Copilot</div><button class="ai-close" onclick="toggleAI()">✕</button></div>
+    <div class="ai-chat-area" id="chatArea">
+      <div class="ai-bubble bot">Hi there! 👋 I'm your AI Copilot. Need help picking a health plan or generating ideas? Just ask!</div>
+    </div>
+    <div class="ai-input-area">
+      <input type="text" class="ai-input" id="chatInput" placeholder="Message Copilot..." onkeypress="if(event.key === 'Enter') handleUserSend()" />
+      <button class="ai-send" onclick="handleUserSend()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+    </div>
+  </div>
+
+  <script>
+    // Global Toast Notification
+    function triggerToast(msg) {
+      const root = document.getElementById('toastRoot');
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.innerText = msg;
+      root.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(10px)'; setTimeout(()=>t.remove(), 300); }, 3000);
+    }
+
+    // Auto-Fill Use Cases
+    function autoFill(query, type) {
+      document.getElementById('userQuery').value = query;
+      document.getElementById('suggestionType').value = type;
+      document.getElementById('inputSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Slight highlight effect to draw attention
+      const inputSec = document.getElementById('inputSection');
+      inputSec.style.transform = 'scale(1.02)';
+      setTimeout(() => inputSec.style.transform = 'none', 300);
+      
+      triggerToast('Template loaded. Click Generate Ideas!');
+    }
+
+    // Backend Execution Logic
+    async function extractAndCallAPI() {
+      const userQuery = document.getElementById('userQuery').value.trim();
+      const suggestionType = document.getElementById('suggestionType').value;
+      const tone = document.getElementById('aiTone').value;
+      
+      if (!userQuery) return triggerToast("Please enter a query first!");
+
+      const btn = document.getElementById('submitBtn');
+      const container = document.getElementById('resultsContainer');
+      const loader = document.getElementById('loader');
+
+      btn.innerText = "Analyzing...";
+      btn.disabled = true;
+      loader.style.display = 'block';
+      container.innerHTML = '';
+
+      try {
+        // Core API Call Orchestrator (Phase 3 spec)
+        const suggestions = await mockFetchSuggestion(userQuery, suggestionType, tone);
+        
+        loader.style.display = 'none';
+        
+        suggestions.forEach((text, index) => {
+          const card = document.createElement('div');
+          card.className = 'result-card';
+          card.style.animationDelay = `${index * 0.15}s`;
+          card.style.display = 'block';
+          
+          const uniqueId = `res-${Date.now()}-${index}`;
+          
+          card.innerHTML = \`
+            <div class="result-header">
+              <span>Result #\${index + 1}</span>
+              <span class="badge" style="background:#EEF2FF; color:var(--primary); padding:0.25rem 0.75rem; border-radius:999px; font-size:0.8rem;">\${suggestionType} • \${tone} Mode</span>
+            </div>
+            <div class="result-text" id="\${uniqueId}">\${text}</div>
+            <div class="result-actions">
+              <button class="action-btn" onclick="saveToHistory('\${uniqueId}', '\${suggestionType}')">💾 Save</button>
+              <button class="action-btn" onclick="improveOutput('\${uniqueId}')">✨ Auto-Improve</button>
+              <button class="action-btn" onclick="navigator.clipboard.writeText(document.getElementById('\${uniqueId}').innerText); triggerToast('Copied to clipboard!')">🔗 Copy</button>
+            </div>
+          \`;
+          container.appendChild(card);
+        });
+
+      } catch (err) {
+        loader.style.display = 'none';
+        triggerToast("API Error encountered.");
+      } finally {
+        btn.innerText = "Generate Ideas";
+        btn.disabled = false;
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // Phase 4: Tone variation & Context Matching
+    function mockFetchSuggestion(query, type, tone) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          let out = [];
+          if (type === 'Health Plans') {
+            if (tone === 'Funny') {
+               out = ["**Eptain Couch Potato Shield:** Perfect if your daily steps are under 100! Zero deductibles on Netflix-related thumb injuries.", "**Acko Avoid-The-Apple Plan:** Keeps the doctor away, but if they get close, we pay 100% of the bill."];
+            } else {
+               out = [
+                `**Eptain Platinum Family Floater (₹1 Cr):** Features day-1 cover for pre-existing conditions. Highly recommended for complete peace of mind.`,
+                `**Acko Zero-Deduction Core:** Evaluated against your parameters. Offers 0 copay and an inbuilt wellness coach.`,
+                `**Niva Bupa ReAssure:** An unlimited recharge plan. Auto-refills 100% of the base sum upon exhaustion.`
+               ];
+            }
+          } else if (type === 'Business Ideas') {
+            out = [
+              `**AI-Driven Underwriting API:** A micro-SaaS validating claims in 0.4 seconds utilizing LLM vision models on printed hospital bills.`,
+              `**Embedded Micro-Insurance:** Pluggable checkout widgets for gig-economy platforms (e.g. insuring an Uber trip per minute).`
+            ];
+          } else {
+             out = [
+              `A high-value ${type.toLowerCase()} framework specifically tailored to: "${query}". Optimized for scalability.`,
+              `An alternative ${type.toLowerCase()} approach focusing on rapid execution and minimal overhead.`
+            ];
+          }
+          resolve(out);
+        }, 1600);
+      });
+    }
+
+    // Phase 4: Local Storage Functionality
+    function saveToHistory(elementId, type) {
+      const text = document.getElementById(elementId).innerText;
+      let history = window.localStorage.getItem('eptain_history');
+      history = history ? JSON.parse(history) : [];
+      
+      history.push({ text, type, date: new Date().toLocaleString() });
+      window.localStorage.setItem('eptain_history', JSON.stringify(history));
+      triggerToast('Saved successfully to LocalStorage! 💾');
+    }
+
+    function viewSavedHistory() {
+      let history = window.localStorage.getItem('eptain_history');
+      if (!history || JSON.parse(history).length === 0) {
+        return triggerToast("Your history is currently empty.");
+      }
+      
+      history = JSON.parse(history);
+      const container = document.getElementById('resultsContainer');
+      container.innerHTML = '<h2 style="font-size:2rem; font-weight:800; margin-bottom:1rem; border-bottom:2px solid var(--border); padding-bottom:1rem;">Your Saved Library</h2>';
+      
+      history.reverse().forEach((item, i) => {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.style.display = 'block';
+        card.style.opacity = '1';
+        card.style.transform = 'none';
+        card.style.animation = 'none';
+        
+        card.innerHTML = \`
+          <div class="result-header"><span>Saved Idea #\${history.length - i}</span><span class="badge" style="background:#EEF2FF; color:var(--primary); padding:0.25rem 0.75rem; border-radius:999px; font-size:0.8rem;">\${item.type}</span></div>
+          <div class="result-text">\${item.text}</div>
+          <div style="font-size:0.8rem; color:var(--text-muted); padding-top:1rem; border-top:1px solid var(--border);">Saved on: \${item.date}</div>
+        \`;
+        container.appendChild(card);
+      });
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function improveOutput(elementId) {
+      const el = document.getElementById(elementId);
+      const orignalText = el.innerText;
+      el.innerHTML = '<span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
+      
+      // Simulate API expansion
+      setTimeout(() => {
+        el.innerHTML = `<strong>[Expanded Version]:</strong> ` + orignalText + ` <em>Additionally, this incorporates predictive analytics to reduce operational friction by 24% while ensuring full HIPAA compliance protocols are met.</em>`;
+        triggerToast('AI successfully expanded the suggestion!');
+      }, 1200);
+    }
+
+    // AI Chat Widget Logic
+    function toggleAI() {
+      const w = document.getElementById('aiWidget');
+      w.classList.toggle('open');
+    }
+
+    function sendUserMsg(txt) {
+      document.getElementById('chatInput').value = txt;
+      handleUserSend();
+    }
+
+    function handleUserSend() {
+      const input = document.getElementById('chatInput');
+      const txt = input.value.trim();
+      if(!txt) return;
+
+      const area = document.getElementById('chatArea');
+      area.innerHTML += \`<div class="ai-bubble user">\${txt}</div>\`;
+      input.value = '';
+      area.scrollTop = area.scrollHeight;
+
+      const typingId = 'typing-' + Date.now();
+      area.innerHTML += \`<div id="\${typingId}" class="ai-bubble bot typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>\`;
+      area.scrollTop = area.scrollHeight;
+
+      setTimeout(() => {
+        document.getElementById(typingId).remove();
+        area.innerHTML += \`<div class="ai-bubble bot">Great question. Based on our real-time database, we can absolutely offer a quote for that. Would you like me to push this query into the main Idea Generator for a deeper breakdown?</div>\`;
+        area.scrollTop = area.scrollHeight;
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
