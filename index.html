@@ -173,20 +173,44 @@
     <div class="quote-card" id="quoteCard">
       <h3 class="quote-header">Get a rapid estimate</h3>
       <div class="quote-grid">
+        <!-- FIXED: Issue 2 & 3 -->
         <div>
           <label class="input-label">Age</label>
-          <select class="input-field"><option>25 Years</option><option selected>26 Years</option><option>27 Years</option></select>
+          <select class="input-field" id="heroAge" onchange="validateHeroForm()">
+            <option value="" disabled selected>Select Age</option>
+            <optgroup label="Youth (18-25)">
+              <option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
+            </optgroup>
+            <optgroup label="Young Adult (26-35)">
+              <option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option>
+            </optgroup>
+            <optgroup label="Mid-Age (36-45)">
+              <option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option>
+            </optgroup>
+            <optgroup label="Senior (46-55)">
+              <option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option>
+            </optgroup>
+            <optgroup label="Pre-Senior (56-65)">
+              <option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option>
+            </optgroup>
+            <optgroup label="Senior+ (66-75)">
+              <option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option>
+            </optgroup>
+          </select>
+          <span class="error-message" id="heroAgeError" style="color:red; font-size:0.8rem; display:none; margin-top:0.25rem;">Required</span>
         </div>
         <div>
           <label class="input-label">Pincode</label>
-          <input type="text" class="input-field" placeholder="110001" />
+          <input type="text" id="heroPincode" class="input-field" placeholder="110001" oninput="validateHeroForm()" maxlength="6"/>
+          <span class="error-message" id="heroPincodeError" style="color:red; font-size:0.8rem; display:none; margin-top:0.25rem;">Must be 6 digits numeric</span>
         </div>
         <div>
           <label class="input-label">Mobile</label>
-          <input type="tel" class="input-field" placeholder="9876543210" />
+          <input type="tel" id="heroMobile" class="input-field" placeholder="9876543210" oninput="validateHeroForm()" maxlength="10"/>
+          <span class="error-message" id="heroMobileError" style="color:red; font-size:0.8rem; display:none; margin-top:0.25rem;">Invalid mobile (Starts 6-9, 10 dig)</span>
         </div>
         <div>
-          <button class="btn btn-primary" style="padding:0.9rem 2rem;" onclick="toggleAI(); sendUserMsg('I need a quick quote for a 26 year old in 110001.')">View Plans ➔</button>
+          <button class="btn btn-primary" id="heroSubmitBtn" style="padding:0.9rem 2rem;" onclick="submitHeroForm()" disabled>View Plans ➔</button>
         </div>
       </div>
     </div>
@@ -241,17 +265,18 @@
     <p class="section-subtitle">Click a pre-built template below to auto-fill the suggestion engine.</p>
     
     <div class="use-cases-grid">
-      <div class="use-case-card" onclick="autoFill('Recommend comprehensive 1 Cr family floater health insurance covering maternity with zero deductions.', 'Health Plans')">
+      <!-- FIXED: Issue 4 (Use Case Templates) -->
+      <div class="use-case-card" id="ucCardFamily" onclick="autoFill('Recommend comprehensive 1 Cr family floater health insurance covering maternity with zero deductions.', 'Health Plans', this)">
         <div class="uc-icon">👨‍👩‍👧‍👦</div>
         <h3 class="uc-title">Family Health Care</h3>
         <p class="uc-desc">Match conditions to the perfect Zero-Copay and No-Room-Rent-Cap policies instantly.</p>
       </div>
-      <div class="use-case-card" onclick="autoFill('Generate 3 unique insuretech business models targeting gig workers.', 'Business Ideas')">
+      <div class="use-case-card" id="ucCardBusiness" onclick="autoFill('Generate 3 unique insuretech business models targeting gig workers.', 'Business Ideas', this)">
         <div class="uc-icon">🚀</div>
         <h3 class="uc-title">Insurtech Ideas</h3>
         <p class="uc-desc">Brainstorm highly profitable and validated business niches with predictive market algorithms.</p>
       </div>
-      <div class="use-case-card" onclick="autoFill('I need comprehensive bumper-to-bumper car insurance for my 2023 Tesla Model 3.', 'Car Insurance')">
+      <div class="use-case-card" id="ucCardCar" onclick="autoFill('I need comprehensive bumper-to-bumper car insurance for my 2023 Tesla Model 3.', 'Car Insurance', this)">
         <div class="uc-icon">🏎️</div>
         <h3 class="uc-title">Vehicle Armor</h3>
         <p class="uc-desc">Instantly compute depreciation scales and compare zero-depreciation engine protection covers.</p>
@@ -263,12 +288,42 @@
   <footer class="footer">
     <div class="brand" style="justify-content: center; margin-bottom: 2rem; color:#fff;">✨ Eptain AI</div>
     <div class="footer-links">
-      <a href="#" onclick="triggerToast('Phase 1 Requirement')">About Us</a>
-      <a href="#" onclick="triggerToast('Connected to Mock Orchestrator')">API Docs</a>
-      <a href="#" onclick="localStorage.clear(); triggerToast('Cache Cleared');">Clear LocalStorage</a>
+      <!-- FIXED: Issue 8 -->
+      <a href="javascript:void(0)" onclick="openModal('aboutModal')">About Us</a>
+      <a href="javascript:void(0)" onclick="openModal('apiModal')">API Docs</a>
+      <!-- FIXED: Issue 7 -->
+      <button onclick="clearQuotes()" class="btn" style="background:transparent; color:#CBD5E1; padding:0; font-weight:500; text-decoration:none; border:none; font-size:inherit;">Clear LocalStorage</button>
     </div>
     <div class="footer-copy">© 2026 Eptain Technologies. End-to-End Analytics & Suggestions Platform.</div>
   </footer>
+
+  <!-- Modals for Footer Links -->
+  <div id="aboutModal" class="modal-overlay" onclick="closeModal('aboutModal')" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+    <div class="modal-content" onclick="event.stopPropagation()" style="background:#fff; padding:2rem; border-radius:12px; max-width:500px; text-align:center; animation: popIn 0.3s forwards;">
+      <h3 style="margin-bottom:1rem; font-size:1.5rem; color:var(--text-dark);">About Us</h3>
+      <p style="color:var(--text-muted); line-height:1.6;">Eptain Technologies is an AI-first InsurTech platform built for India. This is a demo showcasing intelligent insurance recommendation workflows.</p>
+      <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="closeModal('aboutModal')">Close</button>
+    </div>
+  </div>
+
+  <div id="apiModal" class="modal-overlay" onclick="closeModal('apiModal')" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+    <div class="modal-content" onclick="event.stopPropagation()" style="background:#fff; padding:2rem; border-radius:12px; max-width:500px; text-align:left; animation: popIn 0.3s forwards;">
+      <h3 style="margin-bottom:1rem; font-size:1.5rem; color:var(--text-dark); text-align:center;">API Documentation</h3>
+      <div style="background:#F1F5F9; padding:1rem; border-radius:8px; font-family:monospace; margin-bottom:1rem; font-size:0.9rem;">
+        <strong>POST /suggest</strong><br>
+        Body: { type, tone, query }
+      </div>
+      <div style="background:#F1F5F9; padding:1rem; border-radius:8px; font-family:monospace; margin-bottom:1rem; font-size:0.9rem;">
+        <strong>GET /saved-quotes</strong>
+      </div>
+      <div style="background:#F1F5F9; padding:1rem; border-radius:8px; font-family:monospace; margin-bottom:1rem; font-size:0.9rem;">
+        <strong>DELETE /saved-quotes/:id</strong>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn btn-primary" style="margin-top:1rem;" onclick="closeModal('apiModal')">Close</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toastRoot"></div>
 
@@ -287,6 +342,78 @@
   </div>
 
   <script>
+    // FIXED: Issue 1 (Central State)
+    const appState = {
+      selectedTab: "health",
+      tone: "professional",
+      userInput: "",
+      formValid: false
+    };
+
+    // FIXED: Issue 3 (Form Validation)
+    function validateHeroForm() {
+      const age = document.getElementById('heroAge').value;
+      const pincode = document.getElementById('heroPincode').value;
+      const mobile = document.getElementById('heroMobile').value;
+
+      let valid = true;
+
+      // Validate Age
+      if(!age) {
+        document.getElementById('heroAgeError').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('heroAgeError').style.display = 'none';
+      }
+
+      // Validate Pincode (6 digits, numeric)
+      if(!/^\\d{6}$/.test(pincode)) {
+        document.getElementById('heroPincodeError').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('heroPincodeError').style.display = 'none';
+      }
+
+      // Validate Mobile (10 digits, starts with 6-9)
+      if(!/^[6-9]\\d{9}$/.test(mobile)) {
+        document.getElementById('heroMobileError').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('heroMobileError').style.display = 'none';
+      }
+
+      appState.formValid = valid;
+      document.getElementById('heroSubmitBtn').disabled = !valid;
+    }
+
+    function submitHeroForm() {
+      if(!appState.formValid) return;
+      const btn = document.getElementById('heroSubmitBtn');
+      // FIXED: Issue 9 (Loading State)
+      btn.innerText = "Generating...";
+      btn.disabled = true;
+      document.getElementById('loader').style.display = 'block';
+      
+      const p = document.getElementById('heroPincode').value;
+      const a = document.getElementById('heroAge').value;
+
+      setTimeout(() => {
+        btn.innerText = "View Plans ➔";
+        btn.disabled = false;
+        document.getElementById('loader').style.display = 'none';
+        toggleAI();
+        sendUserMsg(`I need a quick quote for a ${a} year old in ${p}.`);
+      }, 1000);
+    }
+
+    // FIXED: Issue 8 (Modals)
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
     // Global Toast Notification
     function triggerToast(msg) {
       const root = document.getElementById('toastRoot');
@@ -311,7 +438,7 @@
       triggerToast('Template loaded. Click Generate Ideas!');
     }
 
-    // Backend Execution Logic
+    // FIXED: Issue 5 (Dynamic Prompt Construction)
     async function extractAndCallAPI() {
       const userQuery = document.getElementById('userQuery').value.trim();
       const suggestionType = document.getElementById('suggestionType').value;
@@ -319,22 +446,29 @@
       
       if (!userQuery) return triggerToast("Please enter a query first!");
 
+      appState.userInput = userQuery;
+      appState.tone = tone;
+
       const btn = document.getElementById('submitBtn');
       const container = document.getElementById('resultsContainer');
       const loader = document.getElementById('loader');
 
-      btn.innerText = "Analyzing...";
+      // FIXED: Issue 9 (Loading State)
+      btn.innerText = "Generating...";
       btn.disabled = true;
       loader.style.display = 'block';
       container.innerHTML = '';
 
       try {
-        // Core API Call Orchestrator (Phase 3 spec)
-        const suggestions = await mockFetchSuggestion(userQuery, suggestionType, tone);
+        const generatedPrompt = `You are an insurance expert. Generate 3 ${suggestionType} suggestions in ${tone} tone for: ${userQuery}`;
+        console.log("Constructed Prompt:", generatedPrompt);
+
+        // FIXED: Issue 2 (Deterministic Engine instead of AI)
+        const suggestions = await generateSuggestions({ tab: suggestionType, tone: tone, input: userQuery });
         
         loader.style.display = 'none';
         
-        suggestions.forEach((text, index) => {
+        suggestions.forEach((item, index) => {
           const card = document.createElement('div');
           card.className = 'result-card';
           card.style.animationDelay = `${index * 0.15}s`;
@@ -342,24 +476,28 @@
           
           const uniqueId = `res-${Date.now()}-${index}`;
           
-          card.innerHTML = \`
+          card.innerHTML = `
             <div class="result-header">
-              <span>Result #\${index + 1}</span>
-              <span class="badge" style="background:#EEF2FF; color:var(--primary); padding:0.25rem 0.75rem; border-radius:999px; font-size:0.8rem;">\${suggestionType} • \${tone} Mode</span>
+              <span>${item.title}</span>
+              <span class="badge" style="background:#EEF2FF; color:var(--primary); padding:0.25rem 0.75rem; border-radius:999px; font-size:0.8rem;">${suggestionType} • ${tone} Mode</span>
             </div>
-            <div class="result-text" id="\${uniqueId}">\${text}</div>
+            <div class="result-text" id="${uniqueId}">
+              <p style="margin-bottom:0.5rem; color:var(--text-dark);">${item.description}</p>
+              <p style="font-weight:600; color:var(--secondary);">✓ ${item.benefit}</p>
+            </div>
             <div class="result-actions">
-              <button class="action-btn" onclick="saveToHistory('\${uniqueId}', '\${suggestionType}')">💾 Save</button>
-              <button class="action-btn" onclick="improveOutput('\${uniqueId}')">✨ Auto-Improve</button>
-              <button class="action-btn" onclick="navigator.clipboard.writeText(document.getElementById('\${uniqueId}').innerText); triggerToast('Copied to clipboard!')">🔗 Copy</button>
+              <button class="action-btn" onclick="saveToHistory('${uniqueId}', '${suggestionType}')">💾 Save</button>
+              <button class="action-btn" onclick="improveOutput('${uniqueId}')">✨ Auto-Improve</button>
+              <button class="action-btn" onclick="navigator.clipboard.writeText(document.getElementById('${uniqueId}').innerText); triggerToast('Copied to clipboard!')">🔗 Copy</button>
             </div>
-          \`;
+          `;
           container.appendChild(card);
         });
 
       } catch (err) {
         loader.style.display = 'none';
-        triggerToast("API Error encountered.");
+        // FIXED: Issue 9 (Error State)
+        container.innerHTML = '<div style="color:red; font-weight:600; text-align:center;">Something went wrong. Please try again.</div>';
       } finally {
         btn.innerText = "Generate Ideas";
         btn.disabled = false;
@@ -367,34 +505,46 @@
       }
     }
 
-    // Phase 4: Tone variation & Context Matching
-    function mockFetchSuggestion(query, type, tone) {
+    // FIXED: Issue 2 (Deterministic Engine)
+    function generateSuggestions({ tab, tone, input }) {
       return new Promise((resolve) => {
         setTimeout(() => {
           let out = [];
-          if (type === 'Health Plans') {
-            if (tone === 'Funny') {
-               out = ["**Eptain Couch Potato Shield:** Perfect if your daily steps are under 100! Zero deductibles on Netflix-related thumb injuries.", "**Acko Avoid-The-Apple Plan:** Keeps the doctor away, but if they get close, we pay 100% of the bill."];
+          if (tab.includes('Health')) {
+            if (tone.includes('Funny')) {
+               out = [
+                 { title: "Couch Potato Shield", description: "Perfect if your daily steps are under 100! Zero deductibles on Netflix-related thumb injuries.", benefit: "100% cashless claims at the nearest sofa." },
+                 { title: "Avoid-The-Apple Plan", description: "Keeps the doctor away, but if they get close, we pay the bill.", benefit: "Includes unlimited virtual hugs from our AI." },
+                 { title: "WebMD Paranoia Cover", description: "For when a headache makes you think the worst.", benefit: "Free therapy sessions included." }
+               ];
             } else {
                out = [
-                `**Eptain Platinum Family Floater (₹1 Cr):** Features day-1 cover for pre-existing conditions. Highly recommended for complete peace of mind.`,
-                `**Acko Zero-Deduction Core:** Evaluated against your parameters. Offers 0 copay and an inbuilt wellness coach.`,
-                `**Niva Bupa ReAssure:** An unlimited recharge plan. Auto-refills 100% of the base sum upon exhaustion.`
+                { title: "Platinum Family Floater", description: "Features day-1 cover for pre-existing conditions. Highly recommended for complete peace of mind.", benefit: "Coverage up to ₹1 Cr with No-Room-Rent-Cap." },
+                { title: "Zero-Deduction Core", description: "Evaluated against your parameters. Offers 0 copay and an inbuilt wellness coach.", benefit: "Restoration of sum insured up to 3 times." },
+                { title: "ReAssure Unlimited", description: "An unlimited recharge plan. Auto-refills 100% of the base sum upon exhaustion.", benefit: "Cashless approval in 30 minutes." }
                ];
             }
-          } else if (type === 'Business Ideas') {
+          } else if (tab.includes('Business')) {
             out = [
-              `**AI-Driven Underwriting API:** A micro-SaaS validating claims in 0.4 seconds utilizing LLM vision models on printed hospital bills.`,
-              `**Embedded Micro-Insurance:** Pluggable checkout widgets for gig-economy platforms (e.g. insuring an Uber trip per minute).`
+              { title: "AI Underwriting API", description: "A micro-SaaS validating claims in 0.4 seconds utilizing LLM vision models on printed hospital bills.", benefit: "Reduces operational friction by 40%." },
+              { title: "Embedded Micro-Insurance", description: "Pluggable checkout widgets for gig-economy platforms.", benefit: "Seamless API integration in under 2 hours." },
+              { title: "Parametric Weather Cover", description: "Smart contracts to trigger payouts based on local weather station data.", benefit: "Instant blockchain-based settlements." }
+            ];
+          } else if (tab.includes('Car')) {
+            out = [
+              { title: "Bumper-to-Bumper EV Shield", description: "Comprehensive EV protection including battery performance degradation.", benefit: "Zero depreciation on replaced parts." },
+              { title: "Pay-How-You-Drive", description: "Telematics-based insurance that rewards safe driving habits.", benefit: "Up to 30% discount on renewal." },
+              { title: "Return to Invoice", description: "Guarantees full invoice value in case of total loss or theft.", benefit: "Includes road tax and registration charges." }
             ];
           } else {
-             out = [
-              `A high-value ${type.toLowerCase()} framework specifically tailored to: "${query}". Optimized for scalability.`,
-              `An alternative ${type.toLowerCase()} approach focusing on rapid execution and minimal overhead.`
+            out = [
+              { title: "Global Nomad Care", description: "Worldwide coverage for medical emergencies and trip cancellations.", benefit: "Cashless network across 190 countries." },
+              { title: "Flight Delay Guardian", description: "Instant lounge access and compensation for delays over 2 hours.", benefit: "No paperwork required for claims." },
+              { title: "Device & Baggage Protect", description: "Comprehensive coverage for loss of electronics and checked baggage.", benefit: "Payouts processed within 24 hours." }
             ];
           }
           resolve(out);
-        }, 1600);
+        }, 1000);
       });
     }
 
@@ -404,19 +554,48 @@
       let history = window.localStorage.getItem('eptain_history');
       history = history ? JSON.parse(history) : [];
       
-      history.push({ text, type, date: new Date().toLocaleString() });
+      const uniqueId = 'saved-' + Date.now();
+      history.push({ id: uniqueId, text, type, date: new Date().toLocaleString() });
       window.localStorage.setItem('eptain_history', JSON.stringify(history));
       triggerToast('Saved successfully to LocalStorage! 💾');
     }
 
+    // FIXED: Issue 7 (Saved Quotes Empty State & Deletion)
+    function clearQuotes() {
+      window.localStorage.removeItem('eptain_history');
+      triggerToast('Cache Cleared');
+      if (document.getElementById('resultsContainer').innerHTML.includes('Your Saved Library')) {
+        viewSavedHistory();
+      }
+    }
+
+    function deleteQuote(id) {
+      let history = window.localStorage.getItem('eptain_history');
+      if(history) {
+        history = JSON.parse(history).filter(item => item.id !== id);
+        window.localStorage.setItem('eptain_history', JSON.stringify(history));
+        triggerToast('Quote deleted');
+        viewSavedHistory();
+      }
+    }
+
     function viewSavedHistory() {
       let history = window.localStorage.getItem('eptain_history');
+      const container = document.getElementById('resultsContainer');
+      
       if (!history || JSON.parse(history).length === 0) {
-        return triggerToast("Your history is currently empty.");
+        container.innerHTML = `
+          <div style="text-align:center; padding:4rem 2rem; background:#fff; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
+            <div style="font-size:4rem; margin-bottom:1rem;">📭</div>
+            <h3 style="font-size:1.5rem; color:var(--text-dark); margin-bottom:0.5rem;">No saved quotes yet.</h3>
+            <p style="color:var(--text-muted);">Generate a plan and hit Save!</p>
+          </div>
+        `;
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
       }
       
       history = JSON.parse(history);
-      const container = document.getElementById('resultsContainer');
       container.innerHTML = '<h2 style="font-size:2rem; font-weight:800; margin-bottom:1rem; border-bottom:2px solid var(--border); padding-bottom:1rem;">Your Saved Library</h2>';
       
       history.reverse().forEach((item, i) => {
@@ -427,11 +606,17 @@
         card.style.transform = 'none';
         card.style.animation = 'none';
         
-        card.innerHTML = \`
-          <div class="result-header"><span>Saved Idea #\${history.length - i}</span><span class="badge" style="background:#EEF2FF; color:var(--primary); padding:0.25rem 0.75rem; border-radius:999px; font-size:0.8rem;">\${item.type}</span></div>
-          <div class="result-text">\${item.text}</div>
-          <div style="font-size:0.8rem; color:var(--text-muted); padding-top:1rem; border-top:1px solid var(--border);">Saved on: \${item.date}</div>
-        \`;
+        card.innerHTML = `
+          <div class="result-header">
+            <span>Saved Idea</span>
+            <span class="badge" style="background:#EEF2FF; color:var(--primary); padding:0.25rem 0.75rem; border-radius:999px; font-size:0.8rem;">${item.type}</span>
+          </div>
+          <div class="result-text">${item.text}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:1rem;">
+            <div style="font-size:0.8rem; color:var(--text-muted);">Saved on: ${item.date}</div>
+            <button class="action-btn" style="background:#FEE2E2; color:#DC2626;" onclick="deleteQuote('${item.id}')">🗑️ Delete</button>
+          </div>
+        `;
         container.appendChild(card);
       });
       container.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -460,23 +645,43 @@
       handleUserSend();
     }
 
+    // FIXED: Issue 6 (Chat Copilot System)
     function handleUserSend() {
       const input = document.getElementById('chatInput');
       const txt = input.value.trim();
       if(!txt) return;
 
       const area = document.getElementById('chatArea');
-      area.innerHTML += \`<div class="ai-bubble user">\${txt}</div>\`;
+      area.innerHTML += `<div class="ai-bubble user">${txt}</div>`;
       input.value = '';
       area.scrollTop = area.scrollHeight;
 
       const typingId = 'typing-' + Date.now();
-      area.innerHTML += \`<div id="\${typingId}" class="ai-bubble bot typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>\`;
+      area.innerHTML += `<div id="${typingId}" class="ai-bubble bot typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
       area.scrollTop = area.scrollHeight;
 
       setTimeout(() => {
         document.getElementById(typingId).remove();
-        area.innerHTML += \`<div class="ai-bubble bot">Great question. Based on our real-time database, we can absolutely offer a quote for that. Would you like me to push this query into the main Idea Generator for a deeper breakdown?</div>\`;
+        let botReply = "You are speaking to Eptain AI Copilot. I can help you with health, motor, and life insurance queries.";
+        const msg = txt.toLowerCase();
+        
+        if(msg.includes('claim')) {
+          botReply = "To file a claim, ensure you have your cashless card and a photo of the invoice. Our AI handles approvals in <10 mins.";
+        } else if(msg.includes('health')) {
+          botReply = "Health insurance covers hospitalization, day-care procedures, and pre/post-hospitalization. Look for Zero-Copay and PMJAY integration where relevant.";
+        } else if(msg.includes('car') || msg.includes('motor')) {
+          botReply = "For motor insurance, we always recommend Zero-Depreciation with Engine Protect. Make sure your IDV accurately matches the market value.";
+        } else if(msg.includes('premium')) {
+          botReply = "Premiums are calculated dynamically. Factors include age, deductible limits, and past claims (NCB). Shall I calculate a custom quote for you?";
+        } else if(msg.includes('family')) {
+          botReply = "Family floater plans offer a shared sum insured for your entire family, which is often more affordable than separate plans. Want to see some options?";
+        } else if(msg.includes('compare')) {
+          botReply = "You can easily compare plans using our 'Plan Recommender' above. It filters based on strict IRDAI regulations to give you transparent choices.";
+        } else {
+          botReply = "I understand. Would you like me to push this query into the main Idea Generator for a deeper breakdown?";
+        }
+
+        area.innerHTML += `<div class="ai-bubble bot">${botReply}</div>`;
         area.scrollTop = area.scrollHeight;
       }, 1500);
     }
